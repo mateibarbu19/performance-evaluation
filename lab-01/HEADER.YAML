@@ -6,4 +6,7 @@ title: Lab 1 - CPU Monitoring (Linux)
 indent: true
 papersize: a4
 pagestyle: empty
+header-includes:
+ - \usepackage{fvextra}
+ - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
