@@ -1,0 +1,9 @@
+from: markdown+raw_tex+markdown_in_html_blocks+raw_html
+html-math-method:
+  method: katex
+toc: true
+citeproc: true
+highlight-style: tango
+input-files:
+  - README.md
+  - header.yaml

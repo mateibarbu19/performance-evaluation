@@ -1,17 +1,10 @@
-UTILS=../utils
+DOC=Lab-01-Sol.pdf
+HEAD=../utils/head.tex
 
-build: README.pdf
+include ../Makefile
 
-README.pdf: HEADER.YAML README.md
-	pandoc \
-		--katex \
-		--toc \
-		--citeproc \
-		-V colorlinks=true \
-		-M date="`date "+%d %B %Y"`" \
-		--include-in-header $(UTILS)/head.tex \
-		HEADER.YAML README.md \
-		-o README.pdf
+build-doc: README.pdf
+	mv README.pdf $(DOC)
 
-clean:
-	rm -f README.pdf
+clean-doc: clean
+	rm -f $(DOC)

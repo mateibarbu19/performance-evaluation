@@ -6,4 +6,5 @@ geometry: margin=2cm
 title: Lab 1 - CPU Monitoring (Linux)
 indent: true
 papersize: a4
+colorlinks: true
 ---
