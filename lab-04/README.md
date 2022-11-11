@@ -58,6 +58,437 @@ $ sudo dmesg | tail
 
 [Bypassing `iptables`](https://github.com/rtsisyk/linux-iptables-contrack-exploit).
 
+# Network Exploration
+
+```bash
+$ ip -c neigh show
+192.168.100.26 dev wlp2s0 lladdr 9e:09:69:54:51:21 REACHABLE
+192.168.100.1 dev wlp2s0 lladdr 30:d1:7e:e0:29:4c REACHABLE
+fe80::1 dev wlp2s0 lladdr 30:d1:7e:e0:29:4c router REACHABLE
+```
+
+Wireshark capture using `arp-scan`:
+
+```python
+No.     Time           Source                Destination           Protocol Length Info
+      1 0.000000000    9e:09:69:54:51:21     IntelCor_f8:9f:49     ARP      42     Who has 192.168.100.20? Tell 192.168.100.26
+
+Frame 1: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: 9e:09:69:54:51:21 (9e:09:69:54:51:21), Dst: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      2 0.000023106    IntelCor_f8:9f:49     9e:09:69:54:51:21     ARP      42     192.168.100.20 is at f8:ac:65:f8:9f:49
+
+Frame 2: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: 9e:09:69:54:51:21 (9e:09:69:54:51:21)
+Address Resolution Protocol (reply)
+
+No.     Time           Source                Destination           Protocol Length Info
+      3 1.864625268    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.0? Tell 192.168.100.20
+
+Frame 3: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      4 1.866966965    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.1? Tell 192.168.100.20
+
+Frame 4: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      5 1.868774740    HuaweiTe_e0:29:4c     IntelCor_f8:9f:49     ARP      42     192.168.100.1 is at 30:d1:7e:e0:29:4c
+
+Frame 5: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: HuaweiTe_e0:29:4c (30:d1:7e:e0:29:4c), Dst: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49)
+Address Resolution Protocol (reply)
+
+No.     Time           Source                Destination           Protocol Length Info
+      6 1.868996721    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.2? Tell 192.168.100.20
+
+Frame 6: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      7 1.870562940    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.3? Tell 192.168.100.20
+
+Frame 7: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      8 1.872133911    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.4? Tell 192.168.100.20
+
+Frame 8: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      9 1.874134438    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.5? Tell 192.168.100.20
+
+Frame 9: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     10 1.876670965    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.6? Tell 192.168.100.20
+
+Frame 10: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     11 1.879145655    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.7? Tell 192.168.100.20
+
+Frame 11: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     12 1.881188528    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.8? Tell 192.168.100.20
+
+Frame 12: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     13 1.882679852    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.9? Tell 192.168.100.20
+
+Frame 13: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     14 1.884065802    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.10? Tell 192.168.100.20
+
+Frame 14: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     15 1.886190438    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.11? Tell 192.168.100.20
+
+Frame 15: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     16 1.888777380    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.12? Tell 192.168.100.20
+
+Frame 16: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     17 1.891115100    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.13? Tell 192.168.100.20
+
+Frame 17: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     18 1.892970332    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.14? Tell 192.168.100.20
+
+Frame 18: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     19 1.894492053    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.15? Tell 192.168.100.20
+
+Frame 19: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     20 1.896180788    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.16? Tell 192.168.100.20
+
+Frame 20: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     21 1.898385489    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.17? Tell 192.168.100.20
+
+Frame 21: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     22 1.900837492    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.18? Tell 192.168.100.20
+
+Frame 22: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     23 1.903130580    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.19? Tell 192.168.100.20
+
+Frame 23: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     24 1.905118159    IntelCor_f8:9f:49     Broadcast             ARP      42     ARP Announcement for 192.168.100.20
+
+Frame 24: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (ARP Announcement)
+
+No.     Time           Source                Destination           Protocol Length Info
+     25 1.906696324    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.21? Tell 192.168.100.20
+
+Frame 25: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+```
+
+Wireshark capture using a custom script:
+
+```bash
+$ ./localnet-ping.sh wlp2s0
+  192.168.100.1    HUAWEI TECHNOLOGIES CO.,LTD        ==>  ok
+```
+
+```python
+No.     Time           Source                Destination           Protocol Length Info
+      1 0.000000000    IntelCor_f8:9f:49     9e:09:69:54:51:21     ARP      42     Who has 192.168.100.26? Tell 192.168.100.20
+
+Frame 1: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: 9e:09:69:54:51:21 (9e:09:69:54:51:21)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      2 0.005395540    9e:09:69:54:51:21     IntelCor_f8:9f:49     ARP      42     192.168.100.26 is at 9e:09:69:54:51:21
+
+Frame 2: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: 9e:09:69:54:51:21 (9e:09:69:54:51:21), Dst: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49)
+Address Resolution Protocol (reply)
+
+No.     Time           Source                Destination           Protocol Length Info
+      3 0.086490854    9e:09:69:54:51:21     IntelCor_f8:9f:49     ARP      42     Who has 192.168.100.20? Tell 192.168.100.26
+
+Frame 3: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: 9e:09:69:54:51:21 (9e:09:69:54:51:21), Dst: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      4 0.086507800    IntelCor_f8:9f:49     9e:09:69:54:51:21     ARP      42     192.168.100.20 is at f8:ac:65:f8:9f:49
+
+Frame 4: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: 9e:09:69:54:51:21 (9e:09:69:54:51:21)
+Address Resolution Protocol (reply)
+
+No.     Time           Source                Destination           Protocol Length Info
+      5 0.681128113    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.0? Tell 192.168.100.20
+
+Frame 5: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      6 0.683293727    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.1? Tell 192.168.100.20
+
+Frame 6: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      7 0.685282758    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.2? Tell 192.168.100.20
+
+Frame 7: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      8 0.687230770    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.3? Tell 192.168.100.20
+
+Frame 8: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+      9 0.689074778    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.4? Tell 192.168.100.20
+
+Frame 9: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     10 0.691144451    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.5? Tell 192.168.100.20
+
+Frame 10: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     11 0.693140257    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.6? Tell 192.168.100.20
+
+Frame 11: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     12 0.695145362    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.7? Tell 192.168.100.20
+
+Frame 12: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     13 0.697058266    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.8? Tell 192.168.100.20
+
+Frame 13: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     14 0.699110193    HuaweiTe_e0:29:4c     IntelCor_f8:9f:49     ARP      42     192.168.100.1 is at 30:d1:7e:e0:29:4c
+
+Frame 14: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: HuaweiTe_e0:29:4c (30:d1:7e:e0:29:4c), Dst: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49)
+Address Resolution Protocol (reply)
+
+No.     Time           Source                Destination           Protocol Length Info
+     15 0.699293396    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.9? Tell 192.168.100.20
+
+Frame 15: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     16 0.701312834    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.10? Tell 192.168.100.20
+
+Frame 16: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     17 0.703081849    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.11? Tell 192.168.100.20
+
+Frame 17: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     18 0.704873330    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.12? Tell 192.168.100.20
+
+Frame 18: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     19 0.707016715    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.13? Tell 192.168.100.20
+
+Frame 19: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     20 0.709212397    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.14? Tell 192.168.100.20
+
+Frame 20: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     21 0.711515720    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.15? Tell 192.168.100.20
+
+Frame 21: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     22 0.713410954    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.16? Tell 192.168.100.20
+
+Frame 22: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     23 0.715030607    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.17? Tell 192.168.100.20
+
+Frame 23: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     24 0.716824567    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.18? Tell 192.168.100.20
+
+Frame 24: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     25 0.718913658    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.19? Tell 192.168.100.20
+
+Frame 25: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+
+No.     Time           Source                Destination           Protocol Length Info
+     26 0.721300310    IntelCor_f8:9f:49     Broadcast             ARP      42     ARP Announcement for 192.168.100.20
+
+Frame 26: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (ARP Announcement)
+
+No.     Time           Source                Destination           Protocol Length Info
+     27 0.723618671    IntelCor_f8:9f:49     Broadcast             ARP      42     Who has 192.168.100.21? Tell 192.168.100.20
+
+Frame 27: 42 bytes on wire (336 bits), 42 bytes captured (336 bits) on interface wlp2s0, id 0
+Ethernet II, Src: IntelCor_f8:9f:49 (f8:ac:65:f8:9f:49), Dst: Broadcast (ff:ff:ff:ff:ff:ff)
+Address Resolution Protocol (request)
+```
+
+## `nmap` vs `traceroute`
+
+```bash
+$ sudo nmap                            \
+    -sn     `# disable port scan`      \
+    -Pn     `# disable host discovery` \
+    -tr     `# perform traceroute`     \
+    8.8.8.8
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-11-04 23:04 EET
+Nmap scan report for dns.google (8.8.8.8)
+Host is up (0.024s latency).
+
+TRACEROUTE (using proto 1/icmp)
+HOP RTT      ADDRESS
+1   6.68 ms  192.168.100.1
+2   10.89 ms StamAcasa.rdsnet.ro (10.0.0.1)
+3   10.38 ms qr90.bucuresti.rdsnet.ro (172.19.210.193)
+4   11.49 ms 10.220.199.26
+5   26.01 ms 10.220.178.148
+6   25.32 ms 209.85.168.182
+7   27.01 ms 74.125.242.225
+8   24.69 ms 142.251.228.23
+9   24.17 ms dns.google (8.8.8.8)
+
+Nmap done: 1 IP address (1 host up) scanned in 0.17 seconds
+```
+
+```bash
+$ traceroute 8.8.8.8
+traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
+ 1  _gateway (192.168.100.1)  3.426 ms  10.661 ms  10.541 ms
+ 2  StamAcasa.rdsnet.ro (10.0.0.1)  10.463 ms  10.384 ms  10.308 ms
+ 3  qr90.bucuresti.rdsnet.ro (172.19.210.193)  10.211 ms  10.643 ms  11.156 ms
+ 4  10.220.158.66 (10.220.158.66)  15.531 ms 10.220.199.12 (10.220.199.12)  11.709 ms 10.220.199.24 (10.220.199.24)  12.261 ms
+ 5  10.220.156.5 (10.220.156.5)  20.942 ms 10.220.153.18 (10.220.153.18)  22.598 ms 10.220.156.5 (10.220.156.5)  19.157 ms
+ 6  72.14.216.212 (72.14.216.212)  20.717 ms 209.85.168.182 (209.85.168.182)  18.279 ms 72.14.216.212 (72.14.216.212)  16.139 ms
+ 7  * 74.125.242.225 (74.125.242.225)  21.409 ms *
+ 8  216.239.35.185 (216.239.35.185)  23.266 ms dns.google (8.8.8.8)  17.523 ms  23.116 ms
+```
+
+The differences I noticed are that `nmap` pings the destination and takes into
+account a Time-to-live exceeded message, but `traceroute` tries to send
+UDP messages and standard DNS queries, and when receiving a Time-to-live
+exceeded message dynamically changes it's strategy.
+
 # Protocol Options
 
 ## Injecting IP Options
