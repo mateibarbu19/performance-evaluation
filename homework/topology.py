@@ -1,11 +1,8 @@
 #!/usr/bin/python
 
 """
-Adaptare dupa linuxrouter.py ( Example network with Linux IP router)
-pentru Tema EP 2022
-
+Adapted from linuxrouter.py ( Example network with Linux IP router)
 """
-# TODO: Adaugat comentarii si TODOs
 
 from mininet.topo import Topo
 from mininet.net import Mininet
@@ -13,9 +10,6 @@ from mininet.node import Node
 from mininet.log import setLogLevel, info
 from mininet.link import TCLink
 from mininet.cli import CLI
-from contextlib import contextmanager
-import sys
-import os
 import hashlib
 import argparse
 from test import *
