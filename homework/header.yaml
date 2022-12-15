@@ -3,10 +3,15 @@ lang: en
 author: Matei Barbu, 341C2
 date:
 geometry: margin=2cm
+classoption: twocolumn
 title: Performance Evaluation Report
 indent: true
 papersize: a4
 numbersections: true
+color-links: true
+urlcolor: blue
+bibliography: bibliography.bib
+csl: utils/ieee.csl
 abstract: This report contains my solutions for the Performance Evaluation
   course assignament. I completed TODO out of it and consider this report should
   be evaluated with TODO points.

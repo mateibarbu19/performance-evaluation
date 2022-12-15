@@ -12,8 +12,6 @@ $ sudo /usr/share/openvswitch/scripts/ovs-ctl start
 ```bash
 $ sudo python3 topology.py matei.barbu1905 -t
 matei.barbu1905
-ea1670c25097a54ce2de01be9df318a86890289024d1bb74a397c652560bda7d
-*** Creating network
 ...
 Running base test with only one server
 Done
@@ -25,7 +23,9 @@ stopping h1
 
 > How many requests can be handled by a single machine?
 
-- Answer:
+The ambiguity of this question, alongside with the technical particularities of
+a network configuration make it impossible to answer or simulate. The biggest
+problem arises from not knowing the network cards on each host. If it supports LSO @LWN_LSO then simple bandwidth information will not suffice. When using Mininet we face scheduling challenges, how threads are given CPU time, and which of these are chosen with respect to the hosts/clients interaction.
 
 > What is the latency of each region?
 
@@ -62,3 +62,5 @@ stopping h1
 ## Solution
 
 ## Efficient Policies Comparison
+
+# Bibliography
