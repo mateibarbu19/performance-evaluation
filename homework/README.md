@@ -51,12 +51,34 @@ a network configuration make it impossible to answer or simulate. The biggest
 problem arises from not knowing the network cards on each host. If it supports
 LSO @LWN_LSO then simple bandwidth information will not suffice. When using
 Mininet we face scheduling challenges, how threads are given CPU time, and which
-of these are chosen with respect to the hosts/clients interaction.
+of these are chosen with respect to the hosts/clients interaction. In the end
+this debate will be settled by the throughput of each servers connection to the
+command unit. See table \ref{response-table} for values.
 
-I heard from a little bird that some have found, when sending a train of
-hundreds of requests, only some of them are served with a OK. It that sense my
-setup passes the $1000+$ test of requests served without a any of them timing
-out or server crashes.
+```{=latex}
+\begin{table}
+\center\begin{tabular}{c|c}
+\hline
+
+   
+    Host     & Response procentage \\
+
+\hline
+
+\texttt{h1}  &        $99$         \\
+\texttt{h2}  &        $23$         \\
+\texttt{h3}  &        $31$         \\
+\texttt{h4}  &        $66$         \\
+\texttt{h5}  &        $2$          \\
+\texttt{h6}  &        $2$          \\
+
+\hline
+\end{tabular}
+\caption{\label{response-table}Ilustration of the procentage of responded
+requests in a houndred sized batch (using \texttt{client.py}) with a 2 second
+timeout.}
+\end{table}
+```
 
 > What is the latency of each region?
 
@@ -124,8 +146,9 @@ same accuracy, the difference is tolerable.]
 \hline
 
 \texttt{c0}  &  \texttt{r0}  &       $19.6$           \\
-\texttt{r0}  &  \texttt{r1}  &       $10.5$           \\
+\texttt{r1}  &  \texttt{h1}  &       $15.6$           \\
 \texttt{r0}  &  \texttt{r2}  &       $12.7$           \\
+\texttt{r0}  &  \texttt{r1}  &       $10.5$           \\
 
 \hline\hline
 
@@ -177,6 +200,8 @@ However there is no load balancing (or has inherit firewall problems).
 @Anycast_TCP
 
 # Implementation
+
+Check out my implementation in `test.py`. Didn't have time to fill in this part.
 
 ## Solution
 
