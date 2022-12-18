@@ -31,7 +31,7 @@ $(DOC):: README.pdf
 
 build: README.pdf $(DOC)
 
-clean:
+clean::
 	rm -f README.pdf README.tex
 	rm -f $(DOC)
 endif

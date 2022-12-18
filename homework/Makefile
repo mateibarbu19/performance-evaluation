@@ -1,6 +1,10 @@
 DOC=Performance-Evaluation-Report.pdf
+SRC=src/client.py src/test.py src/requirements.txt
 
 include ../Makefile
 
-run:
-	sudo python3 topology.py $(MOODLE_USER) -t
+homework.zip: $(DOC)
+	zip -FSr $@ $< $(SRC)
+
+clean::
+	rm -f homework.zip
