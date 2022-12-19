@@ -205,10 +205,10 @@ However there is no load balancing (or has inherit firewall problems).
 In order to call the exposed endpoints of the topology depending on the number
 of request, we are forced to simulate user connections on the command unit, for
 there are no user nodes in the topology. To accurately do so, with some
-precision loss, it is inevitable to run a parallel, or at least concurrent,
-version of our requests batch.^[Users are not in contention, i.e. there are no
-synchronizing elements between any of them. Sure there is the inherit sequencing
-of requests/responses on a physical link, but there is no ordering.]
+precision loss, it is inevitable to run requests in parallel, or at least
+concurrently.^[Users are not in contention, i.e. there are no synchronizing
+elements between any of them. Sure there is the inherit sequencing of
+requests/responses on a physical link, but there is no ordering.]
 
 Please note that it is not specified whether or not the load balancer uses a
 parallel scheduler to deal with many newly incoming connections (see @C10K to
@@ -216,25 +216,23 @@ understand why parallelism or asynchronous operations are needed).
 
 Because of the ambiguity previously mentioned I shifted my focus from a
 master-centric view of the scheduling to a time dependent functional model,
-captured in a scheduling function which simply answers what destination does each
-request have. This approach has it's draw backs:
-  - sometimes scheduling works great (depending on arrival rates), other times
-    not as much; this is the price to pay for a time dependent strategy
-  - don't stress the low bandwidth connection with the required queries for
-    adaptive scheduling.
+captured in a scheduling function which simply answers what destination does
+each request have. This approach has it's drawbacks because response times will
+depend on arrival rates.
 
 I chose three functions which fit our criteria:
-  - round robin
-  - a function which returns a random variable uniformly distributed
-  - a function which returns a random variable whose distribution is weighted
-    according to the responsiveness of all hosts measured at runtime, similar to
-    table \ref{tab:response-table}); this make sense in a production environment
-    where client connections are expected to have timeouts configured, however
-    it has the downside of stressing cross-regional servers, which may not make
-    sense from a business perspective
+
+- round robin
+- a function which returns a uniformly distributed random host ip
+- a function which returns a random variable whose distribution is weighted
+  according to the responsiveness of all hosts measured at runtime, similar to
+  table \ref{tab:response-table}); this make sense in a production environment
+  where client connections are expected to have timeouts configured, however
+  it has the downside of stressing cross-regional servers, which may not make
+  sense from a business perspective
 
 Because I find it difficult to model my solution in [Kendall's notation] terms,
-let's jump into the technicalities. (Just to mention my intuition is that at
+let's jump into the technicalities. (Just to mention my intuition is that
 arrivals are according to a Poisson process, there are $6$ service nodes, but
 latency won't cut it for specifying service times.)
 
@@ -257,14 +255,15 @@ at which all servers show improvements in terms of responsiveness.
 Because of the detachment form a arrival rate distribution and page space
 limitations, I was only interested in the average response time of each server,
 instead of plot of each response time per host. A classical mean function was
-used between all measurements. See figure \ref{fig:chart} for results.
+used between all measurements. Figure \ref{fig:chart}, depicting these results,
+was generated with [`chart.py`](res/chart.py).
 
-I have adjusted the first hosts responsiveness weight, subtracting $10%$ from
-the original value, because the original value lead to flooding down its path.
-As a rule of thumb, when path to server is flooded, all servers in that region
-become unresponsive. This is why both hosts in the US region fall behind in the
-round robin/random scheduling and why ASIA second hosts starts lagging for the
-last experiment.
+I have adjusted the first hosts responsiveness weight, subtracting $10$% from
+the original value, because the original value lead badly flooded that path. As
+a rule of thumb, when a path to server is severely flooded, all servers in that
+region become unresponsive. This is why both hosts in the US region fall behind
+in the round robin/random scheduling and why ASIA second hosts starts lagging
+for the last experiment.
 
 ```{=latex}
 \begin{strip}
@@ -272,9 +271,9 @@ last experiment.
 \includegraphics[width=\textwidth]{res/chart.png}
 \captionof{figure}{Plot of average response times for each host and for each
 scheduling function. The responsiveness weight values are those depitected in
-table \label{tab:response-table}. First two scheduling methods overstress US's
+table \ref{tab:response-table}. First two scheduling methods overstress US's
 servers. As it can be seen only the thrid option minimizes our time cost
-evaluation.}
+evaluation and shows that an nonadaptive solutions isn't perfect.}
 \label{fig:chart}
 \end{strip}
 ```
