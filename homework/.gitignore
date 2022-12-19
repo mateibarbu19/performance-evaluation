@@ -1,4 +1,6 @@
 *__pycache__/
-*client_log.txt
+src/client_log.txt
 tmp.txt
 homework.zip
+src/host_response_procentage.txt
+README.tex

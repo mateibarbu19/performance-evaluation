@@ -7,7 +7,7 @@ Mininet actually uses the network card, for all intents and purposes it is a
 Intel Wireless-AC 9260 rev. 29.]
 
 I have used a virtual machine only for bandwidth testing and for generating the
-`requirements.txt` file.
+[`requirements.txt`](src/requirements.txt) file.
 
 ## Mininet machine
 
@@ -42,7 +42,8 @@ Bandwidth, on the other hand, was provided by `iperf` (as a mininet built-in),
 specifically it's first return value (i.e. the servers reported bandwidth). Bare
 in mind that any tools which uses IP addresses cannot measure bandwidth between
 a host and a switch. For reasons unknown to me, measurements could only be
-performed on the virtual machine. For this reason I tested this part manually.
+performed on the virtual machine. For this reason I tested this part manually,
+all of the rest being automated in [`test.py`](src/test.py)
 
 > How many requests can be handled by a single machine?
 
@@ -75,8 +76,8 @@ command unit. See table \ref{response-table} for values.
 \hline
 \end{tabular}
 \caption{\label{response-table}Ilustration of the procentage of responded
-requests in a houndred sized batch (using \texttt{client.py}) with a 2 second
-timeout.}
+requests in a houndred sized batch (using the original \texttt{client.py}) with
+a 2 second timeout.}
 \end{table}
 ```
 
