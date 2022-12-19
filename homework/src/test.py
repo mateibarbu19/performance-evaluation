@@ -2,7 +2,7 @@ import pingparsing
 from statistics import mean
 
 
-NR_REQUEST_PER_HOST = 1
+NR_REQUEST_PER_HOST = 100
 TIMEOUT = 2
 ALL_HOSTS = ["h1", "h2", "h3", "h4", "h5", "h6"]
 
@@ -13,7 +13,7 @@ def map_hostname_to_ip(net, hostname):
 
 def add_route_stats(node, ip, latency_list, loss_list):
     parser = pingparsing.PingParsing()
-    ping_str = "ping -c 10 "
+    ping_str = "ping -c 100 "
 
     stats = parser.parse(node.cmd(ping_str + ip))
     latency_list.append(stats.rtt_avg / 2)

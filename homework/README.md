@@ -258,22 +258,21 @@ instead of plot of each response time per host. A classical mean function was
 used between all measurements. Figure \ref{fig:chart}, depicting these results,
 was generated with [`chart.py`](res/chart.py).
 
-I have adjusted the first hosts responsiveness weight, subtracting $10$% from
-the original value, because the original value lead badly flooded that path. As
-a rule of thumb, when a path to server is severely flooded, all servers in that
-region become unresponsive. This is why both hosts in the US region fall behind
-in the round robin/random scheduling and why ASIA second hosts starts lagging
-for the last experiment.
+The responsiveness weight values are those depicted in table
+\ref{tab:response-table}, but adjusted so that the first hosts weight is with
+$10$% less, because the original value badly flooded that path. As a rule of
+thumb, when a path to a  server is severely flooded, all servers in that region
+become unresponsive. This is why both hosts in the US region fall behind in the
+round robin/random scheduling and why ASIA second hosts starts lagging for the
+last experiment.
 
 ```{=latex}
 \begin{strip}
 \centering
 \includegraphics[width=\textwidth]{res/chart.png}
 \captionof{figure}{Plot of average response times for each host and for each
-scheduling function. The responsiveness weight values are those depitected in
-table \ref{tab:response-table}. First two scheduling methods overstress US's
-servers. As it can be seen only the thrid option minimizes our time cost
-evaluation and shows that an nonadaptive solutions isn't perfect.}
+scheduling function. As it can be seen only the thrid option minimizes our time
+cost evaluation and shows that an nonadaptive solutions isn't perfect.}
 \label{fig:chart}
 \end{strip}
 ```

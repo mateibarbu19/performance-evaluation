@@ -3,7 +3,7 @@ import requests
 from random import choices
 from concurrent.futures import ThreadPoolExecutor
 
-NR_GETS = 15
+NR_GETS = 300
 ALL_HOSTS_IP = [
     '10.10.101.2',
     '10.10.101.3',
