@@ -1,61 +1,78 @@
+from math import floor
 import requests
-from random import randint, choices
+from random import choices
 from concurrent.futures import ThreadPoolExecutor
 
-NR_GETS = 1
-ALL_HOSTS = ["h1", "h2", "h3", "h4", "h5", "h6"]
+NR_GETS = 15
+ALL_HOSTS_IP = [
+    '10.10.101.2',
+    '10.10.101.3',
+    '10.10.102.2',
+    '10.10.102.3',
+    '10.10.103.2',
+    '10.10.103.3'
+]
+EQUAL_WEIGHTS = len(ALL_HOSTS_IP) * [1]
+cnt = len(ALL_HOSTS_IP) - 1
+host_response_procentage = []
+TIME_PENALTY = 3000000
 
 
-def send_request(address):
-    url = 'http://' + address + ':9000'
-    req = requests.get(url, allow_redirects=False)
-    return req.elapsed.microseconds
+def round_robin():
+    global cnt
+    cnt = (cnt + 1) % len(ALL_HOSTS_IP)
+    return ALL_HOSTS_IP[cnt]
 
 
-def test_distribution(hosts_nr, all_hosts_ips):
-    total_respone_time = [0 for _ in ALL_HOSTS]
-    total_responses = [0 for _ in ALL_HOSTS]
+def random_robin():
+    return choices(ALL_HOSTS_IP, EQUAL_WEIGHTS, k=1)[0]
 
-    addresses = [all_hosts_ips[host_nr] for host_nr in hosts_nr]
+
+def responsive_robin():
+    return choices(ALL_HOSTS_IP, host_response_procentage, k=1)[0]
+
+
+def send_request(get_destination):
+    dst = get_destination()
+    url = 'http://' + dst + ':9000'
+    host_nr = ALL_HOSTS_IP.index(dst)
+    try:
+        req = requests.get(url, allow_redirects=False)
+        return (ALL_HOSTS_IP.index(dst), req.elapsed.microseconds)
+    except requests.ConnectionError:
+        return (host_nr, TIME_PENALTY)
+
+
+def test_distribution(scheduling_func):
+    total_respone_time = len(ALL_HOSTS_IP) * [0]
+    total_responses = len(ALL_HOSTS_IP) * [0]
+    args = NR_GETS * [scheduling_func]
 
     with ThreadPoolExecutor() as executor:
-        times = executor.map(send_request, addresses)
+        results = executor.map(send_request, args)
 
-    print(times)
-
-    for host_nr, time in zip(hosts_nr, times):
+    for host_nr, time in results:
         total_respone_time[host_nr] = total_respone_time[host_nr] + time
         total_responses[host_nr] = total_responses[host_nr] + 1
 
-    average_respone_time = [time / responses for time,
+    average_respone_time = [int(time / responses) if responses else 0 for time,
                             responses in zip(total_respone_time, total_responses)]
 
     return average_respone_time
 
 
 if __name__ == '__main__':
-    host_response_procentage = []
-    all_hosts_ips = []
-
     with open('host_response_procentage.txt', 'r') as file:
-        cnt = 0
         for line in file:
-            if cnt < len(ALL_HOSTS):
-                all_hosts_ips.append(line[:-1])
-            else:
-                host_response_procentage.append(int(line))
-            cnt = cnt + 1
+            host_response_procentage.append(int(line))
 
-    print(all_hosts_ips)
-    print(host_response_procentage)
+    host_response_procentage[0] = floor(9 * host_response_procentage[0] / 10)
 
-    equal_distribution = [packet % len(ALL_HOSTS)
-                          for packet in range(NR_GETS)]
+    print('Times for each host for a equal distribution: ' + ' '.join(map(str,
+          test_distribution(round_robin))))
 
-    random_distribution = [randint(0, len(ALL_HOSTS) - 1)
-                           for _ in range(NR_GETS)]
+    print('Times for each host for a random distribution: ' + ' '.join(map(str,
+          test_distribution(random_robin))))
 
-    throughput_distribution = throughput_distribution = choices(
-        range(len(ALL_HOSTS)), host_response_procentage, k=NR_GETS)
-
-    print(test_distribution(equal_distribution, all_hosts_ips))
+    print('Times for each host for a responsiveness weighted distribution: ' + ' '.join(map(str,
+          test_distribution(responsive_robin))))

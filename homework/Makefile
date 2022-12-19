@@ -1,5 +1,5 @@
 DOC=Performance-Evaluation-Report.pdf
-SRC=src/client.py src/test.py src/requirements.txt
+SRC=src/client.py src/test*.py src/requirements.txt
 
 include ../Makefile
 

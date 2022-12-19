@@ -11,8 +11,11 @@ numbersections: true
 color-links: true
 urlcolor: blue
 bibliography: bibliography.bib
+link-citations: true
+hyperrefoptions:
+  - linktoc=all
 csl: utils/ieee.csl
 abstract: This report contains my solutions for the Performance Evaluation
-  course assignament. I completed TODO out of it and consider this report should
-  be evaluated with TODO points.
+  course assignament. I completed all of it (except bonuses) and consider this
+  report should be evaluated with 100 points.
 ---

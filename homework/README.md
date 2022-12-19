@@ -54,7 +54,7 @@ LSO @LWN_LSO then simple bandwidth information will not suffice. When using
 Mininet we face scheduling challenges, how threads are given CPU time, and which
 of these are chosen with respect to the hosts/clients interaction. In the end
 this debate will be settled by the throughput of each servers connection to the
-command unit. See table \ref{response-table} for values.
+command unit. See table \ref{tab:response-table} for values.
 
 ```{=latex}
 \begin{table}
@@ -69,13 +69,13 @@ command unit. See table \ref{response-table} for values.
 \texttt{h1}  &        $99$         \\
 \texttt{h2}  &        $23$         \\
 \texttt{h3}  &        $31$         \\
-\texttt{h4}  &        $66$         \\
+\texttt{h4}  &        $26$         \\
 \texttt{h5}  &        $2$          \\
 \texttt{h6}  &        $2$          \\
 
 \hline
 \end{tabular}
-\caption{\label{response-table}Ilustration of the procentage of responded
+\caption{\label{tab:response-table}Ilustration of the procentage of responded
 requests in a houndred sized batch (using the original \texttt{client.py}) with
 a 2 second timeout.}
 \end{table}
@@ -85,8 +85,8 @@ a 2 second timeout.}
 
 I consider the latency for a region to be equal to the average latency any route
 from the command unit to any host in that region (because there weren't any user
-in the given topology). See table \ref{latency-table} for values, precision was
-observed amongst runs.
+in the given topology). See table \ref{tab:latency-table} for values, precision
+was observed amongst runs.
 
 ```{=latex}
 \begin{table}
@@ -103,14 +103,14 @@ observed amongst runs.
 
 \hline
 \end{tabular}
-\caption{\label{latency-table}Latency for each region.}
+\caption{\label{tab:latency-table}Latency for each region.}
 \end{table}
 ```
 
 > What is the server path with the smallest response time? But the slowest?
 
-USs top dollar acquired the most responsive servers, host $5$, as opposed to
-EMEAs old-timer, host $4$.
+US's top dollar acquired the most responsive servers, host $5$, as opposed to
+EMEA's old-timer, host $4$.
 
 > What is the path that has the greatest loss percentage?
 
@@ -133,7 +133,7 @@ I measured to be in the range of $8.8014$ to $11.911$, around $9$ most times.
 
 A bottleneck should be any low bandwidth connection. ^[Because a physical
 bottleneck is any point in which flow is obstructed.] See table
-\ref{bandwidth-table} for values. ^[Decompiling the topology setup script,
+\ref{tab:bandwidth-table} for values. ^[Decompiling the topology setup script,
 yields a higher value for all results. Given that all measurements had about the
 same accuracy, the difference is tolerable.]
 
@@ -162,8 +162,8 @@ same accuracy, the difference is tolerable.]
 
 \hline
 \end{tabular}
-\caption{\label{bandwidth-table}Bandwidth between two station, one acting like a
-\texttt{iperf} client , and another like a server. Separated by a double
+\caption{\label{tab:bandwidth-table}Bandwidth between two station, one acting
+like a \texttt{iperf} client , and another like a server. Separated by a double
 horizontal line, are on top the high bandwidth links and low ones below.}
 \end{table}
 ```
@@ -182,8 +182,8 @@ scheduling latencies (inside the load balancer) and how many collision domains
 are configured on the switch.
 
 Given how I defined latency for each region to be, a rough approximation of "the
-latency introduced" could be the average of tables \ref{latency-table} values,
-$33.438$ ms.
+latency introduced" could be the average of tables \ref{tab:latency-table}
+values, $33.438$ ms.
 
 > What downsides do you see in the current architecture design?
 
@@ -202,10 +202,85 @@ However there is no load balancing (or has inherit firewall problems).
 
 # Implementation
 
-Check out my implementation in `test.py`. Didn't have time to fill in this part.
+In order to call the exposed endpoints of the topology depending on the number
+of request, we are forced to simulate user connections on the command unit, for
+there are no user nodes in the topology. To accurately do so, with some
+precision loss, it is inevitable to run a parallel, or at least concurrent,
+version of our requests batch.^[Users are not in contention, i.e. there are no
+synchronizing elements between any of them. Sure there is the inherit sequencing
+of requests/responses on a physical link, but there is no ordering.]
+
+Please note that it is not specified whether or not the load balancer uses a
+parallel scheduler to deal with many newly incoming connections (see @C10K to
+understand why parallelism or asynchronous operations are needed).
+
+Because of the ambiguity previously mentioned I shifted my focus from a
+master-centric view of the scheduling to a time dependent functional model,
+captured in a scheduling function which simply answers what destination does each
+request have. This approach has it's draw backs:
+  - sometimes scheduling works great (depending on arrival rates), other times
+    not as much; this is the price to pay for a time dependent strategy
+  - don't stress the low bandwidth connection with the required queries for
+    adaptive scheduling.
+
+I chose three functions which fit our criteria:
+  - round robin
+  - a function which returns a random variable uniformly distributed
+  - a function which returns a random variable whose distribution is weighted
+    according to the responsiveness of all hosts measured at runtime, similar to
+    table \ref{tab:response-table}); this make sense in a production environment
+    where client connections are expected to have timeouts configured, however
+    it has the downside of stressing cross-regional servers, which may not make
+    sense from a business perspective
+
+Because I find it difficult to model my solution in [Kendall's notation] terms,
+let's jump into the technicalities. (Just to mention my intuition is that at
+arrivals are according to a Poisson process, there are $6$ service nodes, but
+latency won't cut it for specifying service times.)
 
 ## Solution
 
+On the command unit I ran [`test_distributions.py`](src/test_distributions.py)
+which sends a $300$ (running time justified value) requests using a
+[`ThreadPoolExecutor`] with implicit `max_workers` ("it will default to the
+number of processors on the machine, multiplied by `5`"). All threads call a
+scheduling function which only synchronizes them when it models a round robin
+choice. All request are uniform accessing a directory listing. However all
+content but the response time is discarded to remove writing speed limitation of
+our flooding.
+
+I penalized connection errors with $3$ seconds because it is the tipping point
+at which all servers show improvements in terms of responsiveness.
+
 ## Efficient Policies Comparison
 
+Because of the detachment form a arrival rate distribution and page space
+limitations, I was only interested in the average response time of each server,
+instead of plot of each response time per host. A classical mean function was
+used between all measurements. See figure \ref{fig:chart} for results.
+
+I have adjusted the first hosts responsiveness weight, subtracting $10%$ from
+the original value, because the original value lead to flooding down its path.
+As a rule of thumb, when path to server is flooded, all servers in that region
+become unresponsive. This is why both hosts in the US region fall behind in the
+round robin/random scheduling and why ASIA second hosts starts lagging for the
+last experiment.
+
+```{=latex}
+\begin{strip}
+\centering
+\includegraphics[width=\textwidth]{res/chart.png}
+\captionof{figure}{Plot of average response times for each host and for each
+scheduling function. The responsiveness weight values are those depitected in
+table \label{tab:response-table}. First two scheduling methods overstress US's
+servers. As it can be seen only the thrid option minimizes our time cost
+evaluation.}
+\label{fig:chart}
+\end{strip}
+```
+
 # Bibliography
+
+[Kendall's notation]: https://en.wikipedia.org/wiki/Kendall%27s_notation
+[`ThreadPoolExecutor`]: https://docs.python.org/3/library/concurrent.futures.html
+[`requests`]: https://pypi.org/project/requests/

@@ -1,9 +1,8 @@
-from time import sleep
 import pingparsing
 from statistics import mean
 
 
-NR_REQUEST_PER_HOST = 100
+NR_REQUEST_PER_HOST = 1
 TIMEOUT = 2
 ALL_HOSTS = ["h1", "h2", "h3", "h4", "h5", "h6"]
 
@@ -14,7 +13,7 @@ def map_hostname_to_ip(net, hostname):
 
 def add_route_stats(node, ip, latency_list, loss_list):
     parser = pingparsing.PingParsing()
-    ping_str = "ping -c 100 "
+    ping_str = "ping -c 10 "
 
     stats = parser.parse(node.cmd(ping_str + ip))
     latency_list.append(stats.rtt_avg / 2)
@@ -82,9 +81,11 @@ def print_latency_of_r0(c1_routes_stats, r1_routes_stats, r2_routes_stats, r3_ro
 
 
 def test(net):
-    sleep(5)
-
     all_hosts_ips = list(map(lambda h: map_hostname_to_ip(net, h), ALL_HOSTS))
+
+    # weird transient errors
+    for host_ip in all_hosts_ips:
+        net.get("c1").cmd("ping -c1 " + host_ip)
 
     command_unit_routes_stats = add_node_to_hosts_routes_stats(
         net, "c1", all_hosts_ips)
@@ -106,17 +107,19 @@ def test(net):
     for host in ALL_HOSTS:
         net.get(host).sendCmd("python3 -m http.server 9000 &")
 
+    # weird transient errors
+    for host_ip in all_hosts_ips:
+        net.get("c1").cmd("python3 client.py -p http " + host_ip + ":9000")
+
     host_response_procentage = []
     for host in ALL_HOSTS:
         host_response_procentage.append(
             print_host_nr_in_time_requests(net, "c1", host))
 
     # saved in case of emergency
-    # host_response_procentage = [99, 23, 31, 66, 2, 2]
+    # host_response_procentage = [99, 23, 31, 26, 2, 2]
 
     with open('host_response_procentage.txt', 'w') as file:
-        file.writelines("\n".join(all_hosts_ips))
-        file.write("\n")
         file.writelines("\n".join(str(r) for r in host_response_procentage))
 
     net.get("c1").cmdPrint("python3 test_distributions.py")
