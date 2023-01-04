@@ -16,10 +16,15 @@ ifndef HEAD
 	HEAD=$(UTILS)/head.tex
 endif
 
+ifndef CSL
+	CSL=$(UTILS)/ieee.csl
+endif
+
 README.pdf README.tex: README.md header.yaml $(CONFIG) $(HEAD)
 	pandoc -d $(CONFIG) \
 		-M date="`date "+%d %B %Y"`" \
 		--include-in-header $(HEAD) \
+		--csl $(CSL) \
 		-o $@
 
 ifndef DOC
@@ -34,4 +39,5 @@ build: README.pdf $(DOC)
 clean::
 	rm -f README.pdf README.tex
 	rm -f $(DOC)
+
 endif
