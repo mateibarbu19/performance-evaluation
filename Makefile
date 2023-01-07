@@ -2,27 +2,21 @@ ifeq ($(_MY_MAKEFILE_),)
 
 _MY_MAKEFILE_ := defined
 
+DATE = $(shell date -R | cut -d" " -f 2-4)
+
 CURRENT_DIR := $(notdir $(patsubst %/,%,$(shell pwd)))
 
-ifndef CONFIG
-	CONFIG=config_output.yaml
-endif
+CONFIG ?= config_output.yaml
 
-ifndef UTILS
-	UTILS=utils
-endif
+UTILS ?= utils
 
-ifndef HEAD
-	HEAD=$(UTILS)/head.tex
-endif
+HEAD ?= $(UTILS)/head.tex
 
-ifndef CSL
-	CSL=$(UTILS)/ieee.csl
-endif
+CSL ?= $(UTILS)/ieee.csl
 
 README.pdf README.tex: README.md header.yaml $(CONFIG) $(HEAD)
 	pandoc -d $(CONFIG) \
-		-M date="`date "+%d %B %Y"`" \
+		-M date="$(DATE)" \
 		--include-in-header $(HEAD) \
 		--csl $(CSL) \
 		-o $@

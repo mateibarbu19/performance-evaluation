@@ -1,0 +1,13 @@
+from: markdown+raw_attribute+markdown_in_html_blocks
+html-math-method:
+  method: katex
+toc: true
+highlight-style: tango
+filters:
+  - pandoc-crossref
+  - citeproc
+input-files:
+  - README.md
+  - header.yaml
+defaults:
+  - slide_config.yaml

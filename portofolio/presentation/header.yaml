@@ -1,0 +1,14 @@
+---
+theme: Boadilla
+lang: en
+author: Matei Barbu, 341C2
+title: Metascience and the bittersweetness of computer security
+subtitle: Presentation of a paper @soneji2022flawed
+indent: true
+papersize: a4
+numbersections: true
+color-links: true
+urlcolor: blue
+bibliography: bibliography.bib
+link-citations: true
+---
