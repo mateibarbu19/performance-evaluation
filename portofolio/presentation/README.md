@@ -3,7 +3,7 @@
 ## **IS MOST RESEARCH WRONG?**
 
 ![Thumbnail of Veritasium [video](http://www.youtube.com/watch?v=42QuXLucH3Q).
-In it's description we find a reference to metascience paper with 10k+
+In its description we find a reference to metascience paper with 10k+
 citations.](res/vertasium.jpg)
 
 ## What is Metascience?
@@ -73,8 +73,8 @@ integrity of science by filtering out invalid or poor quality articles. @whatis
 - **double blind**
     - the authors and reviewers are not aware of each other's identities
     - eliminates chances of bias
-    - reviewers may still be able recognizeauthors through other markers such as
-      writing style, subject matter and self-citation
+    - reviewers may still be able recognize authors through other markers such
+      as writing style, subject matter and self-citation
 - *open*
     - authors and reviewer are known to each other throughout the process
 
@@ -158,8 +158,8 @@ It was evaluated differently, whether or not it emerged from the following:
 - insight
 - solution
 - method or attack
-- interestingness or excitingness
-- comparison with previous work or state-of-the-art
+- *being interesting or exciting*
+- comparison with previous work or state-of-the-art.
 
 ## Red flags waving you out
 
@@ -181,7 +181,7 @@ Content-related:
     - Evaluation
     - Results
     - Ethical aspects
-- Wrong fit
+- Wrong fit.
 
 ::::
 
@@ -197,7 +197,7 @@ Argument-related:
 - Relevance:
     - Motivation
     - Related work
-    - Application
+    - Application.
 
 ::::
 
@@ -208,7 +208,7 @@ Writing-related:
 - Poor writing
 - Poor English
 - Jargon
-- Graphs, tables, figures
+- Graphs, tables, figures.
 
 ::::
 
@@ -384,7 +384,42 @@ could not delegate.
 
 # Doctor, am I cured?
 
-## Recommendations
+## Recommendations @soneji2022flawed {.allowframebreaks}
+
+### Focus on review quality when mentoring novice reviewers.
+
+To address the problem of reviewing overload with a scarcity of qualified
+reviewers (P08), we recommend that conferences recruit reviewers through a
+vetting process inspired by the shadow/student PC processes.
+
+### Assist reviewers in performing timely reviews.
+
+1. to ensure adequate resources of individual reviewers, chairs can request
+   that reviewers limit the number of PCs that they serve on concurrently
+2. to avoid overwhelming the reviewer, conferences can assign papers in
+   more batches with a shorter turnaround time
+3. to help individual PC members start their reviews, Program Chairs can
+   ask reviewers to submit paper *summaries* early
+4. leveraging more automation in managing the reviewing process
+
+### Reward and recognize good reviewer behavior.
+
+1. Leverage characteristics of high-quality reviews to design a list of quality
+   indicators
+2. Monitor reviewers’ performance by tracking
+    certain variables such as:
+    - the number of papers reviewed
+    - time since the last paper was assigned
+    - average review turnaround time
+    - review length
+    - inter-reviewer agreement
+    - participation in rebuttals and discussions
+
+### Make authors accountable for their submissions.
+
+As some authors might be hesitant to submit their previous reviews, we believe
+that organizations of top-tier security conferences could come together and
+build a shared database to keep track of each paper in the reviewing pipeline.
 
 ## Take away
 
@@ -410,9 +445,9 @@ for authors looking to improve their paper writing.
 
 ```{=latex}
 \center{\LARGE{\emph{The End.}}}
-\center Made with \emoji{heart} and \LaTeX{}.
+\center Made with \emoji{heart}, \LaTeX{} and \href{pandoc.org}{Pandoc}.
 ```
 
 # Bibliography
 
-## References {.allowframebreaks} 
+## References {.allowframebreaks}
