@@ -1,1 +1,10 @@
-../../config_output.yaml
+from: markdown+raw_attribute+markdown_in_html_blocks
+html-math-method:
+  method: katex
+highlight-style: tango
+filters:
+  - pandoc-crossref
+  - citeproc
+input-files:
+  - README.md
+  - header.yaml
